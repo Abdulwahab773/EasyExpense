@@ -37,7 +37,7 @@ let password = document.getElementById("password");
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        location = "./index.html"
+        location = "./dashboard.html"
     }
 });
 
@@ -47,7 +47,7 @@ const loginUser = () => {
         .then((userCredential) => {
             const user = userCredential.user;
             console.log(user);
-            location = "./index.html"
+            location = "./dashboard.html"
         })
         .catch((error) => {
             const errorCode = error.code;

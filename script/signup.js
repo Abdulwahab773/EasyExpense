@@ -42,7 +42,7 @@ let googleSignInBtn = document.getElementById("googleSignInBtn");
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        location = "./index.html"
+        location = "./dashboard.html"
     }
 });
 
@@ -68,7 +68,7 @@ const signInWithGoogle = () => {
             const credential = GoogleAuthProvider.credentialFromResult(result);
             const user = result.user;
             setTimeout(() => {
-                location = "./index.html"
+                location = "./dashboard.html"
             }, 500)
         }).catch((error) => {
             console.log(error);
