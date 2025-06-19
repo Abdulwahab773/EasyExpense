@@ -40,6 +40,8 @@ window.addEventListener('click', (e) => {
 
 // ___________________________________________________________________________________ // 
 
+window.onload = "./index.html"
+
 import { doc, setDoc, onAuthStateChanged, auth, Timestamp, db, collection, addDoc, onSnapshot, query, where, signOut, orderBy } from "./firebase.js"
 
 
@@ -82,7 +84,8 @@ onAuthStateChanged(auth, (user) => {
         getAllTransactions(currentUID);
         getTransRecIncome(currentUID);
         getTransRecExp(currentUID);
-
+    } else {
+        location = "./index.html"
     }
 });
 
@@ -198,7 +201,7 @@ const getAllTransactions = async (currentUID) => {
 
 let logOut = () => {
     signOut(auth).then(() => {
-        location = "./login.html";
+        location = "./index.html";
 
     }).catch((error) => {
         console.log(error);
