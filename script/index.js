@@ -1,3 +1,5 @@
+import { doc, setDoc, onAuthStateChanged, auth, Timestamp, db, collection, addDoc, onSnapshot, query, where, signOut, orderBy } from "./firebase.js"
+
 const themeToggle = document.getElementById('theme-toggle');
 themeToggle.onclick = () => document.documentElement.classList.toggle('dark');
 
@@ -38,12 +40,8 @@ window.addEventListener('click', (e) => {
     }
 });
 
-// ___________________________________________________________________________________ // 
 
 window.onload = "./index.html"
-
-import { doc, setDoc, onAuthStateChanged, auth, Timestamp, db, collection, addDoc, onSnapshot, query, where, signOut, orderBy } from "./firebase.js"
-
 
 let totalBalance = document.getElementById("totalBalance");
 let income = document.getElementById("income");
@@ -73,17 +71,15 @@ onAuthStateChanged(auth, (user) => {
         currentUID = user.uid;
         userName.innerHTML = user.displayName;
         console.log(user);
-        
 
-        if (user.photoURL === null ) {
+
+        if (user.photoURL === null) {
             userImage.src = "https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg";
         } else {
             userImage.src = user.photoURL
         }
 
-        getAllTransactions(currentUID);
-        getTransRecIncome(currentUID);
-        getTransRecExp(currentUID);
+        getTransactions(currentUID);
     } else {
         location = "./index.html"
     }
@@ -91,8 +87,6 @@ onAuthStateChanged(auth, (user) => {
 
 
 const addTransaction = async () => {
-    transactionTitle.innerHTML = "";
-    transactionAmount.innerHTML = "";
     await addDoc(collection(db, "transactions"), {
         uid: currentUID,
         type: transactionType.value,
@@ -107,48 +101,15 @@ const addTransaction = async () => {
 }
 
 
-
-const getTransRecIncome = async (currentUID) => {
-
-    let collectionRef = collection(db, "transactions");
-    let dbRef = query(collectionRef, where("uid", "==", currentUID), where("type", "==", "income"));
-    await onSnapshot(dbRef, (snapshot) => {
-        let totalIncome = 0;
-
-        snapshot.forEach((docs) => {
-            let data = docs.data();
-            totalIncome += data.amount;
-        })
-        income.innerHTML = `$${totalIncome}`;
-        localStorage.setItem("totalIncome", totalIncome);
-    })
-}
-
-
-
-const getTransRecExp = async (currentUID) => {
-
-    let collectionRef = collection(db, "transactions");
-    let dbRef = query(collectionRef, where("uid", "==", currentUID), where("type", "==", "expense"));
-    await onSnapshot(dbRef, (snapshot) => {
-        let totalExp = 0;
-
-        snapshot.forEach((docs) => {
-            let data = docs.data();
-            totalExp += data.amount;
-        })
-        expense.innerHTML = `$${totalExp}`;
-        localStorage.setItem("totalExp", totalExp);
-    })
-}
-
-
-const getAllTransactions = async (currentUID) => {
+const getTransactions = async (currentUID) => {
 
     let collectionRef = collection(db, "transactions");
     let dbRef = query(collectionRef, where("uid", "==", currentUID), orderBy("timestamp", "desc"));
     await onSnapshot(dbRef, (snapshot) => {
         transactionsHistory.innerHTML = "";
+
+        let totalIncome = 0;
+        let totalExpense = 0;
 
         snapshot.forEach((docs) => {
             let data = docs.data();
@@ -156,17 +117,10 @@ const getAllTransactions = async (currentUID) => {
             let createdAt = data.timestamp;
             let date = createdAt.toDate();
 
-            setInterval(() => {
-                let income = Number(localStorage.getItem("totalIncome")) || 0;
-                let expense = Number(localStorage.getItem("totalExp")) || 0;
-
-                let total = income - expense;
-                totalBalance.innerHTML = `$${total}`;
-                savings.innerHTML = `$${total}`;
-            }, 500);
-
-
             if (data.type === "income") {
+
+                totalIncome += data.amount;
+
                 transactionsHistory.innerHTML += `
                 <li class="py-3 flex justify-between items-center">
                 <div>
@@ -179,6 +133,9 @@ const getAllTransactions = async (currentUID) => {
                 </li>
                 `
             } else {
+
+                totalExpense += data.amount;
+
                 transactionsHistory.innerHTML += `
                 <li class="py-3 flex justify-between items-center">
                 <div>
@@ -192,6 +149,10 @@ const getAllTransactions = async (currentUID) => {
                 `
             }
 
+            income.innerHTML = `$${totalIncome}`;
+            expense.innerHTML = `$${totalExpense}`;
+            totalBalance.innerHTML = `$${totalIncome - totalExpense}`;
+            savings.innerHTML = `$${totalIncome - totalExpense}`;
         })
     })
 }
@@ -214,6 +175,6 @@ logoutBtn.addEventListener('click', logOut);
 
 doneTransBtn.addEventListener('click', () => {
     addTransaction();
-})
+});
 
 
