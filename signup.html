@@ -48,7 +48,7 @@
     </nav>
 
 
-    <main class="flex items-center justify-center mt-32 h-96">
+    <main class="flex items-center justify-center mt-14 mb-10">
         <div
             class="w-full max-w-md p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 transition">
             <h2 class="text-3xl font-bold mb-2 text-brand-light dark:text-brand-dark text-center">Create an Account</h2>
@@ -56,17 +56,17 @@
             <form id="signUpForm" class="space-y-4">
                 <div>
                     <label class="block mb-1 text-sm font-semibold">Full Name</label>
-                    <input type="text" placeholder="Your name" id="fullName"
+                    <input type="text" placeholder="Your name" id="fullName" required
                         class="w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 placeholder-gray-400 dark:placeholder-gray-400 focus:ring-2 focus:ring-brand-light dark:focus:ring-brand-dark outline-none transition">
                 </div>
                 <div>
                     <label class="block mb-1 text-sm font-semibold">Email</label>
-                    <input type="email" placeholder="you@example.com" id="email"
+                    <input type="email" placeholder="you@example.com" id="email" required
                         class="w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 placeholder-gray-400 dark:placeholder-gray-400 focus:ring-2 focus:ring-brand-light dark:focus:ring-brand-dark outline-none transition">
                 </div>
                 <div class="relative">
                     <label class="block mb-1 text-sm font-semibold">Password</label>
-                    <input id="password" type="password" placeholder="••••••••"
+                    <input id="password" type="password" placeholder="••••••••" required
                         class="w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 placeholder-gray-400 dark:placeholder-gray-400 focus:ring-2 focus:ring-brand-light dark:focus:ring-brand-dark outline-none transition">
                     <button type="button" id="togglePassword"
                         class="absolute top-9 right-4 text-gray-500 dark:text-gray-400 hover:text-brand-light dark:hover:text-brand-dark">
@@ -78,6 +78,16 @@
                         </svg>
                     </button>
                 </div>
+
+                <div>
+                    <label class="block mb-1 text-sm font-semibold">Profile Picture</label>
+                    <input type="file" accept="image/*" id="profilePic" onchange="imageUpload()" required class="w-full file:px-4 file:py-2 file:rounded-md file:border-0 file:text-white file:bg-brand-light dark:file:bg-brand-dark 
+               px-4 py-3 rounded-md border border-gray-300 dark:border-gray-600 
+               bg-white dark:bg-gray-700 placeholder-gray-400 dark:placeholder-gray-400 
+               focus:ring-2 focus:ring-brand-light dark:focus:ring-brand-dark outline-none transition">
+                </div>
+
+
                 <button type="submit" id="signupBtn"
                     class="w-full py-3 rounded-md bg-gradient-to-r from-brand-light to-brand-dark text-white font-semibold hover:opacity-90 transition">Sign
                     Up

@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -55,8 +56,7 @@
 
       <div class="relative inline-block text-left">
         <button id="profileButton" type="button" class="flex items-center gap-2 focus:outline-none">
-          <img id="userImage" alt="User"
-            class="w-14 h-14 rounded-full border-2 border-gradientStart shadow-sm">
+          <img id="userImage" alt="User" class="w-14 h-14 rounded-full border-2 border-gradientStart shadow-sm">
           <span id="userName" class="hidden sm:inline font-medium">User Name</span>
           <svg class="w-4 h-4 ml-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
             stroke="currentColor">
@@ -108,17 +108,8 @@
 
     <section class="md:col-span-2 bg-white/60 dark:bg-white/10 backdrop-blur p-6 rounded-2xl shadow-xl">
       <h2 class="text-lg font-semibold mb-4">Spending Breakdown</h2>
-      <div
-        class="w-full h-64 bg-gradient-to-br from-gradientStart to-gradientEnd text-white rounded flex items-center justify-center font-bold">
-        [Pie Chart Here]
-      </div>
-      <div class="mt-6">
-        <h3 class="mb-2">Budget Usage</h3>
-        <div class="w-full bg-gray-300 dark:bg-gray-600 rounded-full h-4 overflow-hidden">
-          <div class="bg-gradient-to-r from-gradientStart to-gradientEnd h-4 w-3/4"></div>
-        </div>
-        <p class="text-sm mt-1">75% used</p>
-      </div>
+      <canvas id="expenseChart" height="100px"></canvas>
+
     </section>
 
     <section class="md:col-span-2 bg-white/60 dark:bg-white/10 backdrop-blur p-6 rounded-2xl shadow-xl">

@@ -35,6 +35,33 @@ let email = document.getElementById("email");
 let password = document.getElementById("password");
 let signUpForm = document.getElementById("signUpForm");
 let googleSignInBtn = document.getElementById("googleSignInBtn");
+let profilePicURL;
+
+
+
+
+
+let imageUpload = async () => {
+    let formData = new FormData();
+    let profilePic = document.getElementById("profilePic");
+    let file = profilePic.files[0];
+    formData.append("file", file);
+    formData.append("upload_preset", "Wahab_Cloud");
+
+
+    let res = await fetch("https://api.cloudinary.com/v1_1/dsdnmgnpr/image/upload", {
+        method: "POST",
+        body: formData
+    })
+    .then((res) => {
+        return res.json();
+    })
+    .then((res) => {
+        profilePicURL = res.secure_url;
+    })
+}
+
+
 
 
 onAuthStateChanged(auth, (user) => {
@@ -50,6 +77,7 @@ const createNewUser = () => {
             const user = userCredential.user;
             updateProfile(auth.currentUser, {
                 displayName: fullName.value,
+                photoURL: profilePicURL
             });
             setTimeout(() => {
                 location = "./dashboard.html";
@@ -81,3 +109,4 @@ signUpForm.addEventListener('submit', (e) => {
 })
 
 googleSignInBtn.addEventListener('click', signInWithGoogle);
+window.imageUpload = imageUpload;

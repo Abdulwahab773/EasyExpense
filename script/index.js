@@ -60,7 +60,6 @@ let transactionsHistory = document.getElementById("transactionsHistory");
 
 
 
-
 let userName = document.getElementById("userName");
 let userImage = document.getElementById("userImage");
 let currentUID = null;
@@ -70,8 +69,6 @@ onAuthStateChanged(auth, (user) => {
     if (user) {
         currentUID = user.uid;
         userName.innerHTML = user.displayName;
-        console.log(user);
-
 
         if (user.photoURL === null) {
             userImage.src = "https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg";
@@ -96,7 +93,6 @@ const addTransaction = async () => {
     });
     transactionTitle.value = "";
     transactionAmount.value = "";
-    console.log("done Ho gaya Ustaad");
     modal.classList.add("hidden");
 }
 
@@ -110,6 +106,8 @@ const getTransactions = async (currentUID) => {
 
         let totalIncome = 0;
         let totalExpense = 0;
+        let expenseGroup = {}; 
+
 
         snapshot.forEach((docs) => {
             let data = docs.data();
@@ -136,6 +134,12 @@ const getTransactions = async (currentUID) => {
 
                 totalExpense += data.amount;
 
+                if (expenseGroup[data.title]) {
+                    expenseGroup[data.title] += data.amount;
+                } else {
+                    expenseGroup[data.title] = data.amount;
+                }
+
                 transactionsHistory.innerHTML += `
                 <li class="py-3 flex justify-between items-center">
                 <div>
@@ -151,9 +155,14 @@ const getTransactions = async (currentUID) => {
 
             income.innerHTML = `$${totalIncome}`;
             expense.innerHTML = `$${totalExpense}`;
-            totalBalance.innerHTML = `$${totalIncome - totalExpense}`;
             savings.innerHTML = `$${totalIncome - totalExpense}`;
+            totalBalance.innerHTML = `$${totalIncome - totalExpense}`;
+
         })
+
+        const labels = Object.keys(expenseGroup);
+        const values = Object.values(expenseGroup);
+        createOrUpdatePieChart(labels, values); 
     })
 }
 
@@ -178,3 +187,47 @@ doneTransBtn.addEventListener('click', () => {
 });
 
 
+
+const ctx = document.getElementById('expenseChart').getContext('2d');
+let pieChart; 
+
+const createOrUpdatePieChart = (labels, data) => {
+    if (pieChart) {
+        pieChart.data.labels = labels;
+        pieChart.data.datasets[0].data = data;
+        pieChart.update();
+    } else {
+        pieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Expense Distribution',
+                    data: data,
+                    backgroundColor: [
+                        '#F87171', '#FBBF24', '#34D399', '#60A5FA', '#A78BFA', '#F472B6', '#FB923C', '#4ADE80'
+                    ],
+                    borderColor: '#ffffff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                return `${label}: $${value}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+};
